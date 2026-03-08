@@ -34,8 +34,8 @@ class Post(models.Model):
 
     Related models:
     - :model:`auth.User`
-    - :model:`blogs.Category`
-    - :model:`blogs.Tag`
+    - :model:`blog.Category`
+    - :model:`blog.Tag`
 
     Parameters
     ----------

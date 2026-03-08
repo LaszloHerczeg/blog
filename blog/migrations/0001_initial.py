@@ -42,8 +42,8 @@ class Migration(migrations.Migration):
                 ('excerpt', models.CharField(blank=True, help_text='The content of the body in a short form', max_length=100, null=True)),
                 ('status', models.CharField(blank=True, choices=[('draft', 'Draft'), ('published', 'Published'), ('archived', 'Archived')], help_text='The status of the post. Can be: draft,published or archived', null=True)),
                 ('author', models.ForeignKey(help_text='The author of the post, Foreign key', null=True, on_delete=django.db.models.deletion.SET_NULL, to=settings.AUTH_USER_MODEL)),
-                ('category', models.ForeignKey(blank=True, help_text='The category of the post, 1 can be used maximum to 1 post, Foreign key', null=True, on_delete=django.db.models.deletion.SET_NULL, to='blogs.category')),
-                ('tags', models.ManyToManyField(blank=True, help_text='The tags of the post, multiple can be used for a post, ManyToManyField', to='blogs.tag')),
+                ('category', models.ForeignKey(blank=True, help_text='The category of the post, 1 can be used maximum to 1 post, Foreign key', null=True, on_delete=django.db.models.deletion.SET_NULL, to='blog.category')),
+                ('tags', models.ManyToManyField(blank=True, help_text='The tags of the post, multiple can be used for a post, ManyToManyField', to='blog.tag')),
             ],
         ),
     ]
