@@ -17,6 +17,9 @@ class Category(models.Model):
     name = models.CharField(max_length=10)
     slug = models.CharField(max_length=10)
 
+    def __str__(self):
+        return self.name
+
 class Tag(models.Model):
     """
     Stores tags used for posts
@@ -27,6 +30,9 @@ class Tag(models.Model):
     """
     name = models.CharField(max_length=10)
     slug = models.CharField(max_length=10)
+
+    def __str__(self):
+        return self.name
 
 class Post(models.Model):
     """
