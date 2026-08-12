@@ -7,4 +7,6 @@ urlpatterns = [
     path("", views.index, name="index"),
     # ex:/blog/1
     path("<int:post_id>/", views.detail, name="detail"),
+    # ex:/blog/about/
+    path("about/", views.about, name="about"),
 ]
