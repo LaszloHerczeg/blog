@@ -1,17 +1,31 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> {% block title %}My Blog{% endblock %}</title>
+    <meta property="og:title" content="{% block og_title %}László Herczeg{% endblock %}">
+    {# TODO: replace with real description #}
+    {# TODO: og:image #}
+    <meta property="og:description" content="{% block og_description %}Software developer{% endblock %}">
+    <meta property="og:url" content="{{ request.build_absolute_uri }}">
+    <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+    {% block og_extra %}{% endblock %}
+    <title>{% block title %}Laszlo Herczeg - Software Developer{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
 </head>
 <body>
     <nav>
-        <a href="/blog" class="nav-logo">My Blog</a>
-        <div class="nav-links">
+        <div id="nav-logo">
+            {# TODO: Insert logo #}
+            <a href="{% url 'blog:index' %}" class="nav-logo">My Blog</a>
+        </div>
+        <div class="nav-bar">
             <ul>
-                <li> <a href="/blog">Home</a> </li>
-                <li> <a href="/blog/about">About</a> </li>
+                <li> <a href="{% url 'blog:index' %}">Home</a> </li>
+                <li> <a href="{% url 'blog:blog' %}">Blog</a> </li>
+                <li> <a href="{% url 'blog:projects' %}">Projects</a> </li>
+                <li> <a href="{% url 'blog:about' %}">About</a> </li>
             </ul>
         </div>
     </nav>
@@ -21,7 +35,9 @@
     </main>
 
     <footer>
-       <p>&copy 2026 My Blog</p>
+        <div class="footer-content">
+            <p>&copy 2026 László Herczeg</p>
+        </div>
     </footer>
 
 </body>
