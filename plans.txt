@@ -3,3 +3,6 @@ Detail page - permalink to a single post
 Year-based archive
 Month-based archive
 Some kind of a review action ??
+registration + login
+commenting
+contact form

@@ -15,11 +15,11 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
-    list_display = ["post_title", "excerpt", "pub_date", "author", "category", "status", 'list_tags']
-    date_hierarchy = "pub_date"
+    list_display = ["title", "excerpt", "published", "author", "category", "status", 'list_tags']
+    date_hierarchy = "published"
     actions = ['make_published', 'make_archived']
     radio_fields = {"status": admin.HORIZONTAL}
-    search_fields = ["post_title", "author__username", "tags__name", "category__name", "status"]
+    search_fields = ["title", "author__username", "tags__name", "category__name", "status"]
     search_help_text = "Searchable fields: Title, Author's username, Tags, Category, Status"
 
     @admin.action(description='Mark selected posts as published')

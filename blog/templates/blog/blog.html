@@ -1,0 +1,27 @@
+{% extends "blog/base.html" %}
+{% load static %}
+
+{% block title %}
+    Blog - Laszlo Herczeg
+{% endblock %}
+
+{% block content %}
+    {# TODO: Include date, summary and picture #}
+    {# TODO: Try class-based view #}
+    <h1>
+        Blog
+    </h1>
+    <div id="content-list">
+        {% if latest_post_list %}
+            {%  for post in latest_post_list %}
+                <article class="post-card">
+                    <img src="{% static post.featured_image %}" alt="{{ post.title }}">
+                    <a class="post-title" id="{{ post.id }}" href="{% url 'blog:detail' post.id %}">{{ post.title }}</a>
+                    <p class="post-summary">{{ post.summary }}</p>
+                </article>
+            {%  endfor %}
+        {%  else %}
+            <p>There are no available post yet.</p>
+        {% endif %}
+    </div>
+{%  endblock %}

@@ -66,18 +66,22 @@ class Post(models.Model):
         Short summary or preview of the post.
     status : str
         Draft/Published/Archived status of the post.
+    summary : str
+        The summary of the post.
     """
 
-    post_title = models.CharField(max_length=200, blank=True, null=True, help_text="A short title, max 200 characters")
-    post_body = models.CharField(max_length=1000, help_text="The body of the post")
-    pub_date = models.DateTimeField("date published", help_text="The date of the publication")
+    title = models.CharField(max_length=200, blank=True, null=True, help_text="A short title, max 200 characters")
+    body = models.CharField(max_length=1000, help_text="The body of the post")
+    published = models.DateTimeField("date published", help_text="The date of the publication")
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, help_text="The author of the post, Foreign key")
     slug = models.CharField(max_length=100, blank=True, null=True, help_text="A short slug")
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=SET_NULL, help_text="The category of the post, 1 can be used maximum to 1 post, Foreign key")
     tags = models.ManyToManyField(Tag, blank=True, help_text="The tags of the post, multiple can be used for a post, ManyToManyField")
-    featured_image = models.ImageField(upload_to="featured_images/", blank=True, null=True, help_text="Path to the featured image")
+    featured_image = models.CharField(max_length=200, blank=True, null=True, help_text="The featured image of the post")
     excerpt = models.CharField(max_length=100, blank=True, null=True, help_text="The content of the body in a short form")
     status = models.CharField(choices= [("draft", "Draft"), ("published", "Published"), ("archived", "Archived")], blank=True, null=True, help_text="The status of the post. Can be: draft,published or archived")
+    summary = models.TextField(blank=True, null=True, help_text="A short summary of the post")
+    # TODO:Finish all the attributes
     # comments
     # reviews
     # reading time
@@ -86,7 +90,8 @@ class Post(models.Model):
 
 
     def __str__(self):
-        return f'Title: {self.post_title} - Text: {self.post_body}'
+        return f'Title: {self.title} - Text: {self.body}'
 
+    # TODO: Finish is_recently_published method
     def is_recently_published(self):
         pass

@@ -26,11 +26,24 @@ def index(request):
         request: HttpRequest object
 
     Returns:
+        HttpResponse containing a blog/index.html template
+    """
+    return render(request, "blog/index.html")
+
+def blog(request):
+    """
+    Index view
+
+    Parameters:
+        request: HttpRequest object
+
+    Returns:
         HttpResponse containing the last 5 published posts and a blog/index.html template
     """
-    latest_post_list = Post.objects.order_by("-pub_date")[:5]
+    # TODO: Shows not published articles when the number of published posts are less than 5
+    latest_post_list = Post.objects.order_by("-published")[:5]
     context = {"latest_post_list": latest_post_list}
-    return render(request, "blog/index.html", context)
+    return render(request, "blog/blog.html", context)
 
 
 """
@@ -55,6 +68,18 @@ def detail(request, post_id):
     """
     post = get_object_or_404(Post, pk=post_id)
     return render(request, "blog/detail.html", {"post": post})
+
+def projects(request):
+    """
+    About view
+
+    Parameters:
+        request: HttpRequest object
+
+    Returns:
+        HttpResponse containing blog/projects.html template
+    """
+    return render(request, "blog/projects.html")
 
 def about(request):
     """
