@@ -13,6 +13,8 @@ urlpatterns = [
     path("blog/<int:post_id>/", views.detail, name="detail"),
     # ex:/projects
     path("projects/", views.projects, name="projects"),
-    # ex:/blog/about/
+    # ex:/about/
     path("about/", views.about, name="about"),
+    # ex:/registration/
+    path("accounts/registration/", views.registration, name="registration"),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

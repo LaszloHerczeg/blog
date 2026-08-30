@@ -1,0 +1,53 @@
+{% extends "blog/base.html" %}
+
+{% block content %}
+    <h1>
+        Registration
+    </h1>
+
+    <form action="/accounts/registration/" method="post">
+    {% csrf_token %}
+
+        <div class="errors">
+            {{ form.non_field_errors }}
+            {{ form.username.errors }}
+            {{ form.first_name.errors }}
+            {{ form.last_name.errors }}
+            {{ form.email.errors }}
+            {{ form.password.errors }}
+            {{ form.password_confirmation.errors }}
+        </div>
+
+        <div class="fieldWrapper">
+            <label for="{{ form.username.id_for_label }}">Username:</label>
+            {{ form.username }}
+        </div>
+
+        <div class="fieldWrapper">
+            <label for="{{ form.first_name.id_for_label }}">First name:</label>
+            {{ form.first_name }}
+        </div>
+
+        <div class="fieldWrapper">
+            <label for="{{ form.last_name.id_for_label }}">Last name:</label>
+            {{ form.last_name }}
+        </div>
+
+        <div class="fieldWrapper">
+            <label for="{{ form.email.id_for_label }}">Email:</label>
+            {{ form.email }}
+        </div>
+
+        <div class="fieldWrapper">
+            <label for="{{ form.password.id_for_label }}">Password:</label>
+            {{ form.password }}
+        </div>
+
+        <div class="fieldWrapper">
+            <label for="{{ form.password_confirmation.id_for_label }}">Password confirmation:</label>
+            {{ form.password_confirmation }}
+        </div>
+        
+    <input type="submit" value="Submit">
+    </form>
+{% endblock %}
