@@ -15,20 +15,31 @@
     <link rel="stylesheet" href="{% static 'blog/css/style.css' %}">
 </head>
 <body>
-    <nav>
-        <div id="nav-logo">
-            {# TODO: Insert logo #}
-            <a href="{% url 'blog:index' %}" class="nav-logo">My Blog</a>
-        </div>
-        <div class="nav-bar">
-            <ul>
-                <li> <a href="{% url 'blog:index' %}">Home</a> </li>
-                <li> <a href="{% url 'blog:blog' %}">Blog</a> </li>
-                <li> <a href="{% url 'blog:projects' %}">Projects</a> </li>
-                <li> <a href="{% url 'blog:about' %}">About</a> </li>
-            </ul>
-        </div>
-    </nav>
+    <header>
+        <nav>
+            <div id="nav-logo">
+                {# TODO: Insert logo #}
+                <a href="{% url 'blog:index' %}" class="nav-logo">My Blog</a>
+            </div>
+            <div class="nav-bar">
+                <ul>
+                    <li> <a href="{% url 'blog:index' %}">Home</a> </li>
+                    <li> <a href="{% url 'blog:blog' %}">Blog</a> </li>
+                    <li> <a href="{% url 'blog:projects' %}">Projects</a> </li>
+                    <li> <a href="{% url 'blog:about' %}">About</a> </li>
+                    <li> <a href="{% url 'blog:registration' %}">Sign up</a> </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li class="alert alert-{{ message.tags }}">{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
     <main>
         {% block content %} {% endblock %}
