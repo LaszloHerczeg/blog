@@ -27,7 +27,20 @@
                     <li> <a href="{% url 'blog:blog' %}">Blog</a> </li>
                     <li> <a href="{% url 'blog:projects' %}">Projects</a> </li>
                     <li> <a href="{% url 'blog:about' %}">About</a> </li>
-                    <li> <a href="{% url 'blog:registration' %}">Sign up</a> </li>
+                    {% if user.is_authenticated %}
+                        <li class="nav-account">
+                            <a href="{% url 'blog:profile' %}">{{ user.get_short_name|default:user.username }}</a>
+                        </li>
+                        <li>
+                            <form method="post" action="{% url 'blog:logout' %}" class="logout-form">
+                                {% csrf_token %}
+                                <button type="submit">Sign out</button>
+                            </form>
+                        </li>
+                    {% else %}
+                        <li class="nav-account"> <a href="{% url 'blog:login' %}">Sign in</a> </li>
+                        <li> <a href="{% url 'blog:registration' %}">Sign up</a> </li>
+                    {% endif %}
                 </ul>
             </div>
         </nav>

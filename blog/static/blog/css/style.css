@@ -1,154 +1,745 @@
+/* ==========================================================================
+   Laszlo Herczeg — portfolio & blog
+   Dark theme: "ledger"
+
+   Design notes
+   ------------
+   Background is a deep ink-blue rather than near-black, so the page reads as
+   paper-under-lamplight instead of terminal. The one accent is brass; it is
+   used almost nowhere except the short rule under each page heading and the
+   focus/hover states. Labels are set in mono small caps like the column
+   headings of a ledger — that pairing (mono labels, serif body, grotesque
+   headings) is the signature of the whole site.
+
+   Table of contents
+   -----------------
+   1.  Fonts
+   2.  Tokens (custom properties)
+   3.  Base & reset
+   4.  Layout shell
+   5.  Header & navigation
+   6.  Footer
+   7.  Typography
+   8.  Links & buttons
+   9.  Messages / alerts
+   10. Blog list & post detail
+   11. Forms (all auth pages, registration, profile edit)
+   12. Data tables (profile)
+   13. Responsive
+   14. Accessibility
+   ========================================================================== */
+
+
+/* 1. Fonts ================================================================= */
+
+/* @import is simple but delays first paint slightly. Faster alternative:
+   move this to a <link> in base.html <head> — see the note in chat. */
+@import url('https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..800&family=JetBrains+Mono:wght@400..500&family=Source+Serif+4:opsz,wght@8..60,400..600&display=swap');
+
+
+/* 2. Tokens ================================================================ */
+
 :root {
-    --ink:    #fff;
-    --body:   #E6E6E6;
-    --rule:   #e4e6ea;
-    --accent: #7AA2F7;
-    --bg:     #121212;
-    --card:   #1E1E1E;
-    --border-color: #444444;
+    /* --- colour ------------------------------------------------------- */
+    --ink:            #10161f;   /* page background        */
+    --ink-raised:     #161e29;   /* cards, inputs, header  */
+    --ink-sunken:     #0c1118;   /* footer                 */
+    --rule:           #26303d;   /* hairlines and borders  */
+    --rule-strong:    #37455673;
+
+    --text:           #e6e9ee;   /* body copy              */
+    --text-dim:       #97a3b4;   /* labels, meta, captions */
+    --text-faint:     #64707f;   /* disabled, placeholders */
+
+    --brass:          #d3a04a;   /* the single accent      */
+    --brass-bright:   #eaba63;   /* hover                  */
+    --brass-veil:     #d3a04a1f; /* 12% brass, for tints   */
+
+    --danger:         #e0796f;
+    --success:        #6fbf9b;
+
+    /* --- type --------------------------------------------------------- */
+    --font-display: 'Bricolage Grotesque', 'Segoe UI', system-ui, sans-serif;
+    --font-body:    'Source Serif 4', Georgia, 'Times New Roman', serif;
+    --font-mono:    'JetBrains Mono', 'Cascadia Mono', Consolas, monospace;
+
+    /* --- spacing ------------------------------------------------------ */
+    --gap-xs: 0.4rem;
+    --gap-sm: 0.75rem;
+    --gap:    1.25rem;
+    --gap-lg: 2.5rem;
+    --gap-xl: 4.5rem;
+
+    /* --- misc --------------------------------------------------------- */
+    --radius:    4px;
+    --measure:   68ch;   /* comfortable reading width */
+    --shell:     1120px; /* max page width            */
 }
 
-*, *::before, *::after { box-sizing: border-box; }
 
+/* 3. Base & reset ========================================================== */
 
-#content-list a:link{
-  color: #7AA2F7;
-  text-decoration: none;
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html {
+    /* Tells the browser the page is dark, so form controls, scrollbars and
+       the like get their dark variants instead of white ones. */
+    color-scheme: dark;
+    scroll-behavior: smooth;
 }
-
-#content-list a:visited{
-  color: #7AA2F7;
-}
-
-#content-list a:hover{
-  text-decoration: underline;
-}
-
-
 
 body {
     margin: 0;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
-                 Roboto, Helvetica, Arial, sans-serif;
-    line-height: 1.6;
-    color: var(--ink);
-    background: var(--bg);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+
+    background-color: var(--ink);
+    color: var(--text);
+
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    font-optical-sizing: auto;
+
     -webkit-font-smoothing: antialiased;
 }
 
-/* ---------- nav ---------- */
+img { max-width: 100%; height: auto; display: block; }
+
+hr {
+    border: 0;
+    border-top: 1px solid var(--rule);
+    margin: var(--gap-lg) 0;
+}
+
+
+/* 4. Layout shell ========================================================== */
+
+main {
+    flex: 1;                       /* pushes the footer to the bottom */
+    width: 100%;
+    max-width: var(--shell);
+    margin: 0 auto;
+    padding: var(--gap-xl) var(--gap) var(--gap-xl);
+}
+
+/* Long-form text pages stay narrow enough to read comfortably. */
+main > p,
+main > h2,
+main > h3,
+main > ul,
+main > ol { max-width: var(--measure); }
+
+
+/* 5. Header & navigation =================================================== */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    background-color: color-mix(in srgb, var(--ink-raised) 88%, transparent);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--rule);
+}
+
+header nav {
+    max-width: var(--shell);
+    margin: 0 auto;
+    padding: 0 var(--gap);
+    min-height: 68px;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gap);
+}
+
+/* --- logo ------------------------------------------------------------- */
 
 .nav-logo {
-    font-size: 1.15rem;
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    color: var(--body);
+    font-family: var(--font-mono);
+    font-size: 0.95rem;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    color: var(--text);
     text-decoration: none;
 }
 
-.nav-bar {
-
-
+.nav-logo::before {
+    content: '§ ';               /* placeholder mark until the real logo */
+    color: var(--brass);
 }
+
+.nav-logo:hover { color: var(--brass-bright); }
+
+/* --- links ------------------------------------------------------------ */
 
 .nav-bar ul {
     display: flex;
-    justify-content: space-evenly;
     align-items: center;
-    gap: 1.75rem;
+    gap: 1.6rem;
     margin: 0;
     padding: 0;
     list-style: none;
 }
 
-.nav-bar a {
-    position: relative;
-    display: inline-block;
-    padding: 0.3rem 0;
-    font-size: 0.8125rem;
-    font-weight: 600;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--body);
+/* One selector for both real links and the logout button, so the two can
+   never drift apart when the nav is restyled later. */
+.nav-bar a,
+.nav-bar button {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    font-weight: 400;
+    letter-spacing: 0.03em;
+    text-transform: lowercase;
+
+    color: var(--text-dim);
     text-decoration: none;
-    transition: color 0.18s ease;
+
+    padding: 0.35rem 0;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
 }
 
-/* ---------- page shell ---------- */
-
-main {
-    max-width: 70%;
-    margin: 0 auto;
-    padding: 3rem 1.5rem;
+.nav-bar a:hover,
+.nav-bar button:hover {
+    color: var(--text);
+    border-bottom-color: var(--brass);
 }
 
-.site-footer {
-    margin-top: 4rem;
-    padding: 2rem 1.5rem;
-    border-top: 1px solid var(--rule);
-    font-size: 0.8125rem;
-    color: var(--body);
+/* The account items sit apart from the site sections. */
+.nav-account {
+    margin-left: auto;
+    padding-left: 1.6rem;
+    border-left: 1px solid var(--rule);
 }
 
-.site-footer p { margin: 0; }
+.nav-account a { color: var(--brass); }
+.nav-account a:hover { color: var(--brass-bright); }
 
-@media (max-width: 30rem) {
-    .site-nav { padding: 0.9rem 1.15rem; }
-    .nav-links ul { gap: 1.25rem; }
-}
+/* --- the logout form -------------------------------------------------- */
 
-#content-list {
-    gap: 2rem;
-}
-
-.post-card {
-    background-color: var(--card);
-    display: grid;
-    grid-template-columns: 0.5fr 0.5fr;
-    grid-template-rows: 0.2fr 0.8fr;
-    grid-template-areas:
-                'picture title'
-                'picture summary';
-    gap: 1.5rem;
-    min-width: 0;
-    margin-bottom: 2rem;
-
-}
-
-.post-card img {
-    grid-area: picture;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    overflow: hidden;
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    display: block;
-}
-
-.post-card .post-title {
-    grid-area: title;
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    overflow: hidden;
-    overflow-wrap: break-word;
-}
-
-.post-card .post-summary {
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    grid-area: summary;
-    overflow: hidden;
+/* A <button> brings its own font, background, border and padding from the
+   operating system. All four have to be cleared for it to sit level with
+   the links beside it. `font: inherit` is the one people usually miss. */
+.logout-form {
+    display: inline;
     margin: 0;
-    overflow-wrap: break-word;
+    padding: 0;
+}
+
+.nav-bar .logout-form button {
+    background: none;
+    border: none;
+    border-bottom: 1px solid transparent;
+    font: inherit;
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    text-transform: lowercase;
+    cursor: pointer;
 }
 
 
-#nav-logo {
-    text-align: center;
+/* 6. Footer ================================================================ */
+
+footer {
+    background-color: var(--ink-sunken);
+    border-top: 1px solid var(--rule);
+    margin-top: var(--gap-xl);
 }
 
 .footer-content {
-    padding: 10px;
-    text-align: right;
+    max-width: var(--shell);
+    margin: 0 auto;
+    padding: var(--gap-lg) var(--gap);
+}
+
+.footer-content p {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-faint);
+}
+
+
+/* 7. Typography ============================================================ */
+
+h1, h2, h3, h4 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    line-height: 1.15;
+    letter-spacing: -0.015em;
+    color: #fff;
+    text-wrap: balance;
+}
+
+/* The signature: a short brass segment at the head of a hairline that runs
+   the full width of the column. border-image paints the gradient along the
+   border itself — brass for the first 3.5rem, then the ordinary rule colour. */
+main h1 {
+    font-size: clamp(2rem, 5vw, 3rem);
+    margin: 0 0 var(--gap-lg);
+    padding-bottom: var(--gap-sm);
+    border-bottom: 1px solid var(--rule);
+    border-image: linear-gradient(
+        to right,
+        var(--brass) 0 3.5rem,
+        var(--rule) 3.5rem 100%
+    ) 1;
+}
+
+h2 { font-size: 1.6rem; margin: var(--gap-lg) 0 var(--gap-sm); }
+h3 { font-size: 1.2rem; margin: var(--gap-lg) 0 var(--gap-xs); }
+
+/* about.html uses an h3 as a standfirst under the h1 — treat it as one. */
+main h1 + h3 {
+    margin-top: 0;
+    font-family: var(--font-body);
+    font-weight: 400;
+    font-size: 1.25rem;
+    line-height: 1.5;
+    color: var(--text-dim);
+    max-width: var(--measure);
+}
+
+p { margin: 0 0 var(--gap); }
+
+/* Post dates and similar metadata. */
+time {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    margin-bottom: var(--gap-lg);
+}
+
+code, pre, kbd {
+    font-family: var(--font-mono);
+    font-size: 0.9em;
+}
+
+code {
+    background: var(--ink-raised);
+    border: 1px solid var(--rule);
+    border-radius: 3px;
+    padding: 0.1em 0.35em;
+}
+
+
+/* 8. Links & buttons ======================================================= */
+
+main a {
+    color: var(--brass);
+    text-decoration: none;
+    border-bottom: 1px solid var(--brass-veil);
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+main a:hover {
+    color: var(--brass-bright);
+    border-bottom-color: var(--brass-bright);
+}
+
+/* Submit controls. Django renders these as either <button> or <input>,
+   depending on the template, so both are covered. */
+button[type="submit"],
+input[type="submit"],
+.submit-row input {
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+
+    color: var(--ink);
+    background-color: var(--brass);
+    border: 1px solid var(--brass);
+    border-radius: var(--radius);
+    padding: 0.6rem 1.4rem;
+    cursor: pointer;
+
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+button[type="submit"]:hover,
+input[type="submit"]:hover,
+.submit-row input:hover {
+    background-color: var(--brass-bright);
+    border-color: var(--brass-bright);
+}
+
+/* A row of actions: primary button plus a plain "Cancel" link. */
+.form-actions,
+.submit-row {
+    display: flex;
+    align-items: center;
+    gap: var(--gap);
+    margin-top: var(--gap-lg);
+}
+
+.form-actions a { font-size: 0.95rem; }
+
+
+/* 9. Messages / alerts ===================================================== */
+
+.messages {
+    max-width: var(--shell);
+    margin: var(--gap) auto 0;
+    padding: 0 var(--gap);
+    list-style: none;
+}
+
+.alert {
+    font-size: 0.95rem;
+    padding: 0.75rem 1rem;
+    margin-bottom: var(--gap-sm);
+    border-left: 2px solid var(--brass);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    background-color: var(--ink-raised);
+}
+
+.alert-success { border-left-color: var(--success); }
+.alert-error   { border-left-color: var(--danger); }
+.alert-warning { border-left-color: var(--brass); }
+
+
+/* 10. Blog list & post detail ============================================== */
+
+#content-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: var(--gap-lg) var(--gap);
+}
+
+.post-card {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gap-xs);
+    padding-bottom: var(--gap);
+    border-bottom: 1px solid var(--rule);
+}
+
+.post-card img {
+    width: 100%;
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+    border-radius: var(--radius);
+    margin-bottom: var(--gap-xs);
+    filter: saturate(0.85);
+    transition: filter 0.25s ease;
+}
+
+.post-card:hover img { filter: saturate(1); }
+
+.post-title {
+    font-family: var(--font-display);
+    font-size: 1.3rem;
+    font-weight: 600;
+    line-height: 1.25;
+    color: var(--text);
+    border-bottom: none;      /* overrides the generic main a rule */
+}
+
+.post-title:hover { color: var(--brass-bright); }
+
+.post-summary {
+    margin: 0;
+    font-size: 0.98rem;
+    color: var(--text-dim);
+}
+
+/* The body of a single post. */
+main > time + p,
+main > p { max-width: var(--measure); }
+
+
+/* 11. Forms ================================================================ */
+/* Covers three different markup styles that exist across the templates:
+   - the plain <table> in login.html
+   - the admin-derived .form-row / .flex-container / fieldset.module markup
+     in the password_* templates
+   - the .fieldWrapper divs in registration.html
+   All three end up looking the same on screen. */
+
+/* Auth pages are narrow: one column of fields, nothing else. */
+form { margin: 0; }
+
+fieldset,
+fieldset.module {
+    border: none;
+    margin: 0;
+    padding: 0;
+    max-width: 30rem;
+}
+
+/* --- labels ----------------------------------------------------------- */
+
+label,
+.form-table th,
+.profile-table th {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    font-weight: 400;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+}
+
+label { display: block; margin-bottom: 0.3rem; }
+
+/* --- inputs ----------------------------------------------------------- */
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="url"],
+input[type="number"],
+textarea,
+select {
+    width: 100%;
+    max-width: 30rem;
+
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--text);
+
+    background-color: var(--ink-raised);
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
+    padding: 0.6rem 0.75rem;
+
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+input:hover,
+textarea:hover { border-color: var(--rule-strong); }
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: var(--brass);
+    background-color: var(--ink);
+}
+
+::placeholder { color: var(--text-faint); }
+
+/* Chrome paints autofilled fields bright yellow. This overrides it by
+   filling the box with an inset shadow instead of a background colour. */
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    -webkit-box-shadow: 0 0 0 100px var(--ink-raised) inset;
+    -webkit-text-fill-color: var(--text);
+    caret-color: var(--text);
+}
+
+/* --- field rows ------------------------------------------------------- */
+
+.fieldWrapper,
+.form-row {
+    margin-bottom: var(--gap);
+    max-width: 30rem;
+}
+
+/* Admin markup puts label and input side by side; stack them instead. */
+.flex-container {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+}
+
+/* login.html lays its fields out in a bare table. */
+main form table {
+    border-collapse: collapse;
+    margin-bottom: var(--gap);
+}
+
+main form table td {
+    padding: 0 0 var(--gap-sm);
+    vertical-align: top;
+}
+
+main form table td:first-child {
+    padding-right: var(--gap);
+    padding-top: 0.65rem;
+    white-space: nowrap;
+}
+
+/* --- help text and errors --------------------------------------------- */
+
+.help-text,
+.help {
+    font-family: var(--font-body);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    color: var(--text-faint);
+    margin: 0.35rem 0 0;
+    max-width: 30rem;
+}
+
+.field-error,
+.errornote,
+.errorlist,
+.errors ul,
+.form-errors {
+    font-size: 0.88rem;
+    color: var(--danger);
+    margin: 0.35rem 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.errornote,
+.form-errors {
+    padding: 0.7rem 1rem;
+    margin-bottom: var(--gap);
+    border-left: 2px solid var(--danger);
+    background-color: var(--ink-raised);
+    max-width: 30rem;
+}
+
+/* An empty <div class="errors"> would otherwise leave a gap. */
+.errors:empty { display: none; }
+
+/* Hidden helper input in password_reset_confirm.html. */
+.hidden { display: none; }
+
+/* --- the edit-profile table form -------------------------------------- */
+
+.form-table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 34rem;
+}
+
+.form-table th,
+.form-table td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0 0 var(--gap);
+}
+
+.form-table th {
+    width: 30%;
+    padding-right: var(--gap);
+    padding-top: 0.8rem;
+}
+
+.form-table label { margin-bottom: 0; }
+
+
+/* 12. Data tables (profile) ================================================ */
+
+.profile-table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 34rem;
+    margin-bottom: var(--gap-lg);
+}
+
+.profile-table th,
+.profile-table td {
+    text-align: left;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid var(--rule);
+}
+
+.profile-table th {
+    width: 34%;
+    padding-right: var(--gap);
+    vertical-align: middle;
+}
+
+/* Values are the content here, so they get the reading face at full weight
+   while the labels stay quiet in mono. */
+.profile-table td {
+    font-family: var(--font-body);
+    font-size: 1rem;
+    color: var(--text);
+}
+
+.profile-table tr:last-child th,
+.profile-table tr:last-child td { border-bottom: none; }
+
+/* The two links under the profile table read as a small action bar. */
+.profile-table + p {
+    display: flex;
+    gap: var(--gap);
+    font-size: 0.95rem;
+}
+
+
+/* 13. Responsive =========================================================== */
+
+@media (max-width: 720px) {
+    main { padding-top: var(--gap-lg); }
+
+    header nav {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: var(--gap-sm);
+        padding-top: var(--gap-sm);
+        padding-bottom: var(--gap-sm);
+    }
+
+    .nav-bar ul {
+        flex-wrap: wrap;
+        gap: 1rem;
+    }
+
+    /* No room to push the account links right on a phone. */
+    .nav-account {
+        margin-left: 0;
+        padding-left: 0;
+        border-left: none;
+    }
+
+    /* Stack table-based forms into single-column rows. */
+    .form-table,
+    .form-table tbody,
+    .form-table tr,
+    .form-table th,
+    .form-table td,
+    main form table,
+    main form table tbody,
+    main form table tr,
+    main form table td {
+        display: block;
+        width: 100%;
+    }
+
+    .form-table th,
+    main form table td:first-child {
+        padding: 0 0 0.3rem;
+    }
+
+    .form-table td { padding-bottom: var(--gap); }
+
+    .profile-table th { width: 40%; }
+}
+
+
+/* 14. Accessibility ======================================================== */
+
+/* A visible focus ring for keyboard users only — :focus-visible leaves mouse
+   clicks alone. Never remove this without replacing it with something. */
+:focus-visible {
+    outline: 2px solid var(--brass);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        transition-duration: 0.01ms !important;
+    }
 }

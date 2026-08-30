@@ -1,14 +1,13 @@
 from django.contrib import messages
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
+from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 
-from .forms import RegisterForm
+from .forms import RegisterForm, LoginForm, UserForm
 from .models import Post
-
-# Create your views here.
 
 """
     def index(request):
@@ -99,6 +98,7 @@ def about(request):
     return render(request, "blog/about.html")
 
 def registration(request):
+    # TODO: checking if the passwords are the same
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -125,4 +125,20 @@ def registration(request):
     else:
         form = RegisterForm()
 
-    return render(request, "blog/accounts/registration.html", {"form": form})
+    return render(request, "blog/account/registration.html", {"form": form})
+
+@login_required
+def profile(request):
+    return render(request, "blog/account/profile.html")
+
+@login_required
+def profile_edit(request):
+    if request.method == "POST":
+        form = UserForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect("blog:profile")
+    else:
+        form = UserForm(instance=request.user)
+
+    return render(request, "blog/account/profile_edit.html", {"form": form})
