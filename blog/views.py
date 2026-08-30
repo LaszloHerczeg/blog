@@ -1,6 +1,11 @@
-from django.http import HttpResponse, Http404
-from django.template import loader
-from django.shortcuts import get_object_or_404, render
+from django.contrib import messages
+from django.contrib.auth import login
+from django.contrib.auth.models import User
+from django.db import IntegrityError
+from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render, redirect
+
+from .forms import RegisterForm
 from .models import Post
 
 # Create your views here.
@@ -92,3 +97,32 @@ def about(request):
         HttpResponse containing blog/about.html template
     """
     return render(request, "blog/about.html")
+
+def registration(request):
+    if request.method == "POST":
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            username = form.cleaned_data.get("username")
+            first_name = form.cleaned_data.get("first_name")
+            last_name = form.cleaned_data.get("last_name")
+            email = form.cleaned_data.get("email")
+            password = form.cleaned_data.get("password")
+            password_confirmation = form.cleaned_data.get("password_confirmation")
+            try:
+                user = User.objects.create_user(
+                    username = username,
+                    email = email,
+                    password = password,
+                    first_name=first_name,
+                    last_name = last_name,
+                )
+                login(request, user)
+                messages.success(request, f"Successfully logged in, {username}!")
+            except IntegrityError:
+                form.add_error("username", "Username already exists")
+            return redirect("blog:index")
+
+    else:
+        form = RegisterForm()
+
+    return render(request, "blog/accounts/registration.html", {"form": form})
