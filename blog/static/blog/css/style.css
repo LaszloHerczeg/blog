@@ -217,7 +217,11 @@ header nav {
     border-left: 1px solid var(--rule);
 }
 
-.nav-account a { color: var(--brass); }
+.nav-account a {
+    color: var(--brass);
+    text-transform: none;
+}
+
 .nav-account a:hover { color: var(--brass-bright); }
 
 /* --- the logout form -------------------------------------------------- */
@@ -233,14 +237,22 @@ header nav {
 
 .nav-bar .logout-form button {
     background: none;
-    border: none;
-    border-bottom: 1px solid transparent;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius);
     font: inherit;
     font-family: var(--font-mono);
-    font-size: 0.82rem;
+    font-size: 0.78rem;
     letter-spacing: 0.03em;
     text-transform: lowercase;
+    color: var(--text-dim);
+    padding: 0.3rem 0.8rem;
     cursor: pointer;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+.nav-bar .logout-form button:hover {
+    color: var(--text);
+    border-color: var(--brass);
 }
 
 
