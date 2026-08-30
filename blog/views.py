@@ -137,6 +137,7 @@ def profile_edit(request):
         form = UserForm(request.POST, instance=request.user)
         if form.is_valid():
             form.save()
+            messages.success(request, "Your details have been saved.")
             return redirect("blog:profile")
     else:
         form = UserForm(instance=request.user)
