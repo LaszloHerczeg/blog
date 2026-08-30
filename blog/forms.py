@@ -35,3 +35,25 @@ class RegisterForm(forms.Form):
         if password != password_confirmation:
             raise forms.ValidationError("Passwords do not match.")
         return password_confirmation
+
+
+class LoginForm(forms.Form):
+    username = forms.CharField(label='Username', max_length=100)
+    password = forms.CharField(widget=forms.PasswordInput, label='Password')
+
+    def clean_username(self):
+        username = self.cleaned_data["username"]
+        return username
+
+    def clean_password(self):
+        password = self.cleaned_data["password"]
+        return password
+
+class UserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('username', 'first_name', 'last_name', 'email')
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields["email"].required = True
