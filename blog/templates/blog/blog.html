@@ -7,13 +7,12 @@
 
 {% block content %}
     {# TODO: Include date, summary and picture #}
-    {# TODO: Try class-based view #}
     <h1>
         Blog
     </h1>
     <div id="content-list">
-        {% if latest_post_list %}
-            {%  for post in latest_post_list %}
+        {% if post_list %}
+            {%  for post in post_list %}
                 <article class="post-card">
                     <img src="{% static post.featured_image %}" alt="{{ post.title }}">
                     <a class="post-title" id="{{ post.id }}" href="{% url 'blog:detail' post.id %}">{{ post.title }}</a>
@@ -24,4 +23,30 @@
             <p>There are no available post yet.</p>
         {% endif %}
     </div>
-{%  endblock %}
+
+    <nav class="pagination" aria-label="Blog pages">
+        <span class="step-links">
+            <span class="page-prev">
+                {% if page_obj.has_previous %}
+                    {% if page_obj.previous_page_number > 1 %}
+                        <a href="?page=1">&laquo; first</a>
+                    {% endif %}
+                    <a href="?page={{ page_obj.previous_page_number }}">&laquo; previous</a>
+                {% endif %}
+            </span>
+
+            <span class="current">
+                Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}
+            </span>
+
+            <span class="page-next">
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}">next &raquo;</a>
+                    {% if page_obj.next_page_number < page_obj.paginator.num_pages %}
+                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                    {% endif %}
+                {% endif %}
+            </span>
+        </span>
+    </nav>
+    {%  endblock %}
