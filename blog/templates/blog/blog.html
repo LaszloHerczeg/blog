@@ -16,7 +16,7 @@
                 <article class="post-card">
                     <img src="{% static post.featured_image %}" alt="{{ post.title }}">
                     <a class="post-title" id="{{ post.id }}" href="{% url 'blog:detail' post.id %}">{{ post.title }}</a>
-                    <p class="post-summary">{{ post.summary }}</p>
+                    <p class="post-summary">{{ post.summary|truncatewords:40}}</p>
                 </article>
             {%  endfor %}
         {%  else %}

@@ -453,7 +453,7 @@ input[type="submit"]:hover,
     font-weight: 600;
     line-height: 1.25;
     color: var(--text);
-    border-bottom: none;      /* overrides the generic main a rule */
+    border-bottom: none;
 }
 
 .post-title:hover { color: var(--brass-bright); }
@@ -461,7 +461,11 @@ input[type="submit"]:hover,
 .post-summary {
     margin: 0;
     font-size: 0.98rem;
+    line-height: 1.5;
     color: var(--text-dim);
+    overflow-wrap: break-word;
+    max-height: calc(1.5em * 3);
+    overflow: hidden;
 }
 
 /* The body of a single post. */
