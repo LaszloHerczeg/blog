@@ -5,9 +5,17 @@ from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
+from django.views import generic
 
 from .forms import RegisterForm, LoginForm, UserForm
 from .models import Post
+
+class PostListView(generic.ListView):
+    paginate_by = 6
+    model = Post
+    context_object_name = "post_list"
+    queryset = Post.objects.filter(status__exact="published").order_by("-published")
+    template_name = "blog/blog.html"
 
 """
     def index(request):

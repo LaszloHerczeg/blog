@@ -468,6 +468,63 @@ input[type="submit"]:hover,
 main > time + p,
 main > p { max-width: var(--measure); }
 
+/* --- pagination ------------------------------------------------------- */
+
+.pagination {
+    margin-top: var(--gap-xl);
+    padding-top: var(--gap);
+    border-top: 1px solid var(--rule);
+}
+
+/* Three tracks: a flexible one each side, and the counter in the middle
+   sized to its content. Because both outer tracks are 1fr they stay equal
+   whatever they hold, so the counter sits dead centre even when "first"
+   or "last" is hidden — it never shifts as you page through. */
+.step-links {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: var(--gap);
+}
+
+.page-prev,
+.page-next {
+    display: flex;
+    gap: var(--gap);
+}
+
+/* justify-self positions an item inside its own grid track. */
+.page-prev { justify-self: start; }
+.page-next { justify-self: end; }
+
+/* The generic `main a` rule paints links brass with a faint underline;
+   here they should read as quiet controls, like the nav. */
+main .pagination a {
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    letter-spacing: 0.03em;
+    text-transform: lowercase;
+    color: var(--text-dim);
+    padding: 0.35rem 0;
+    border-bottom: 1px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+}
+
+main .pagination a:hover {
+    color: var(--text);
+    border-bottom-color: var(--brass);
+}
+
+/* Set like the form labels: mono small caps, the ledger-column look. */
+.pagination .current {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+    white-space: nowrap;
+}
+
 
 /* 11. Forms ================================================================ */
 /* Covers three different markup styles that exist across the templates:
@@ -733,6 +790,20 @@ main form table td:first-child {
 
     .profile-table th { width: 40%; }
 }
+
+    .step-links {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--gap-sm);
+    }
+
+    .pagination .current {
+        grid-column: 1 / -1;   /* span from first line to last */
+        grid-row: 1;
+        justify-self: center;
+    }
+
+    .page-prev { grid-row: 2; grid-column: 1; }
+    .page-next { grid-row: 2; grid-column: 2; }
 
 
 /* 14. Accessibility ======================================================== */

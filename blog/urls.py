@@ -10,7 +10,7 @@ urlpatterns = [
     path("", views.index, name="index"),
 
     # ex:/blog
-    path("blog/", views.blog, name="blog"),
+    path("blog/", views.PostListView.as_view(), name="blog"),
 
     # ex:/blog/1
     path("blog/<int:post_id>/", views.detail, name="detail"),
