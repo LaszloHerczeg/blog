@@ -13,7 +13,7 @@ urlpatterns = [
     path("blog/", views.PostListView.as_view(), name="blog"),
 
     # ex:/blog/1
-    path("blog/<int:post_id>/", views.detail, name="detail"),
+    path("blog/<pk>/", views.PostDetailView.as_view(), name="detail"),
 
     # ex:/projects
     path("projects/", views.projects, name="projects"),
