@@ -420,6 +420,68 @@ input[type="submit"]:hover,
 
 
 /* 10. Blog list & post detail ============================================== */
+/* --- search ----------------------------------------------------------- */
+
+.search {
+    display: flex;
+    justify-content: flex-end;   /* pushes the form to the right edge */
+    margin-bottom: var(--gap);
+}
+
+.search form {
+    display: flex;
+    align-items: stretch;        /* input, select and button share a height */
+    gap: var(--gap-xs);
+}
+
+/* The generic rule in section 11 gives every input and select
+   width: 100% and max-width: 30rem. Both have to be undone here, or the
+   two fields stretch across the page instead of sitting compactly. */
+.search input[type="text"],
+.search select {
+    width: auto;
+    max-width: none;
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.02em;
+    padding: 0.4rem 0.6rem;
+}
+
+.search input[type="text"] { width: 13rem; }
+
+.search select {
+    color: var(--text-dim);
+    text-transform: lowercase;
+}
+
+/* Section 8 fills every submit button with solid brass. At this size that
+   reads as the loudest thing on the page, so the search button is quiet
+   until you hover it. */
+.search button[type="submit"] {
+    font-size: 0.85rem;
+    line-height: 1;
+    padding: 0.4rem 0.7rem;
+    color: var(--text-dim);
+    background-color: var(--ink-raised);
+    border-color: var(--rule);
+}
+
+.search button[type="submit"]:hover {
+    background-color: var(--ink-raised);
+    border-color: var(--brass);
+}
+
+/* --- result count ----------------------------------------------------- */
+
+/* Set exactly like .pagination .current — the same ledger-column label. */
+.result-count {
+    margin: 0 0 var(--gap-lg);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--text-faint);
+}
 
 #content-list {
     display: grid;

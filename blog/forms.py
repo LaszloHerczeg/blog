@@ -2,7 +2,6 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 
-
 class RegisterForm(forms.Form):
     username = forms.CharField(label='Username', max_length=100)
     first_name = forms.CharField(label='First Name', max_length=100)
@@ -36,7 +35,6 @@ class RegisterForm(forms.Form):
             raise forms.ValidationError("Passwords do not match.")
         return password_confirmation
 
-
 class LoginForm(forms.Form):
     username = forms.CharField(label='Username', max_length=100)
     password = forms.CharField(widget=forms.PasswordInput, label='Password')
@@ -57,3 +55,14 @@ class UserForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["email"].required = True
+
+class SearchForm(forms.Form):
+    query = forms.CharField(label='Search:',
+                            required=False,
+                            widget=forms.TextInput(attrs={'placeholder': 'Search...'},
+                            ))
+    field = forms.ChoiceField(label="Search in:",
+                              required=True,
+                              widget=forms.Select(),
+                              choices=[('all', 'Everything'), ('title and content', 'Body and Title'), ('title', 'Title'), ('content', 'Content'), ('tags', 'Tags'), ('category', 'Category')],
+                              )

@@ -3,19 +3,57 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db import IntegrityError
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render, redirect
 from django.views import generic
 
-from .forms import RegisterForm, LoginForm, UserForm
+from .forms import RegisterForm, LoginForm, UserForm, SearchForm
 from .models import Post
 
 class PostListView(generic.ListView):
     paginate_by = 6
     model = Post
     context_object_name = "post_list"
-    queryset = Post.objects.filter(status__exact="published").order_by("-published")
     template_name = "blog/blog.html"
+
+    def get_queryset(self):
+        queryset = Post.objects.filter(status__exact="published").order_by("-published")
+        form = SearchForm(self.request.GET)
+        if form.is_valid():
+            query = form.cleaned_data.get("query")
+            field = form.cleaned_data.get("field")
+
+            if query:
+                if field == "all":
+                    queryset = (queryset.filter(Q(title__icontains=query) |
+                                               Q(body__icontains=query) |
+                                               Q(tags__name__icontains=query) |
+                                               Q(category__name__icontains=query))
+                                    .distinct())
+                elif field == "title":
+                    queryset = queryset.filter(title__icontains=query)
+
+                elif field == "content":
+                    queryset = queryset.filter(body__icontains=query)
+
+                elif field == "title and content":
+                    queryset = queryset.filter(
+                        Q(title__icontains=query) | Q(body__icontains=query)
+                    )
+
+                elif field == "tags":
+                    queryset = queryset.filter(tags__name__icontains=query)
+
+                elif field == "category":
+                    queryset = queryset.filter(category__name__icontains=query)
+
+        return queryset
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["form"] = SearchForm(self.request.GET)
+        return context
 
 class PostDetailView(generic.DetailView):
     model = Post
