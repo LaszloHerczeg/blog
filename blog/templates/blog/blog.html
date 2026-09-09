@@ -10,6 +10,19 @@
     <h1>
         Blog
     </h1>
+
+    <div class="search">
+        <form method="get" action="{% url 'blog:blog' %}">
+            {{ form.query.label }}
+            {{ form.query }}
+            {{ form.field.label }}
+            {{ form.field }}
+        <button type="submit" aria-label="Search">🔍</button>
+        </form>
+    </div>
+
+    <p class="result-count">{{ page_obj.paginator.count }} posts</p>
+
     <div id="content-list">
         {% if post_list %}
             {%  for post in post_list %}
@@ -29,9 +42,9 @@
             <span class="page-prev">
                 {% if page_obj.has_previous %}
                     {% if page_obj.previous_page_number > 1 %}
-                        <a href="?page=1">&laquo; first</a>
+                        <a href="?page=1&query={{ request.GET.query }}&field={{ request.GET.field }}">&laquo; first</a>
                     {% endif %}
-                    <a href="?page={{ page_obj.previous_page_number }}">&laquo; previous</a>
+                    <a href="?page={{ page_obj.previous_page_number }}&query={{ request.GET.query }}&field={{ request.GET.field }}">&laquo; previous</a>
                 {% endif %}
             </span>
 
@@ -41,9 +54,9 @@
 
             <span class="page-next">
                 {% if page_obj.has_next %}
-                    <a href="?page={{ page_obj.next_page_number }}">next &raquo;</a>
+                    <a href="?page={{ page_obj.next_page_number }}&query={{ request.GET.query }}&field={{ request.GET.field }}">next &raquo;</a>
                     {% if page_obj.next_page_number < page_obj.paginator.num_pages %}
-                        <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}&query={{ request.GET.query }}&field={{ request.GET.field }}">last &raquo;</a>
                     {% endif %}
                 {% endif %}
             </span>
